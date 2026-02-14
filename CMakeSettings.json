@@ -1,0 +1,42 @@
+﻿{
+  "configurations": [
+    {
+      "name": "Windows-x86-Release",
+      "generator": "Ninja",
+      "configurationType": "RelWithDebInfo",
+      "buildRoot": "${projectDir}\\out\\${workspaceHash}\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "variables": [
+        {
+          "name": "VCPKG_TARGET_TRIPLET",
+          "value": "x86-windows-static",
+          "type": "STRING"
+        }
+      ],
+      "cmakeToolchain": "D:/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    },
+    {
+      "name": "Windows-x86-Debug",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}\\out\\${workspaceHash}\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "-v",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "variables": [
+        {
+          "name": "VCPKG_TARGET_TRIPLET",
+          "value": "x86-windows-static",
+          "type": "STRING"
+        }
+      ],
+      "cmakeToolchain": "D:/vcpkg/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    }
+  ]
+}
