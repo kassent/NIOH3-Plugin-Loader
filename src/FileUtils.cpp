@@ -17,7 +17,7 @@ namespace FileUtils {
         return defaultPath;
     }
 
-    std::filesystem::path GetExecutablePath() {
+    std::filesystem::path GetExecutableDirectory() {
         char buffer[MAX_PATH] = {0};
         GetModuleFileNameA(NULL, buffer, MAX_PATH);
         return std::filesystem::path(buffer).parent_path();

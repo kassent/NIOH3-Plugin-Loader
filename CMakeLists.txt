@@ -45,7 +45,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 find_package(spdlog CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
 
-set(LIB_DINPUT8_WRAPPER DINPUT8)
+set(LIB_DINPUT8_WRAPPER dinput8)
 
 
 file(GLOB_RECURSE COMMON_SOURCES 

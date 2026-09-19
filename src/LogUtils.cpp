@@ -7,16 +7,14 @@
 #include <spdlog/sinks/rotating_file_sink.h>
 
 
-std::string pluginName;
 std::shared_ptr<spdlog::logger> globalLogger;
 
 void initLogger(const char* a_pluginName) {
-    pluginName = a_pluginName;
-    std::string logFilePath = FileUtils::GetDocumentsDirectory().data() + std::string("\\") + a_pluginName + std::string(".log");
+    auto logFilePath = FileUtils::GetExecutableDirectory() / "logs" / (std::string(a_pluginName) + ".log");
     // Create a file rotating logger with 5 MB size max and 3 rotated files
     auto max_size = 1048576 * 5;
     auto max_files = 1;
-    globalLogger = spdlog::rotating_logger_mt("logger", logFilePath, max_size, max_files);
+    globalLogger = spdlog::rotating_logger_mt("logger", logFilePath.generic_string(), max_size, max_files);
     globalLogger->flush_on(spdlog::level::debug);
     globalLogger->set_level(spdlog::level::info);
     globalLogger->set_pattern("[%Y-%m-%d %H:%M:%S.%e][%l][%t] %v");

@@ -36,7 +36,9 @@ extern "C" {
 }
 
 #define PLUGIN_NAME "NIOH3PluginLoader"
-
+#define PLUGIN_VERSION_MAJOR 1
+#define PLUGIN_VERSION_MINOR 0
+#define PLUGIN_VERSION_PATCH 2
 namespace {
 
 struct LoadedPlugin {
@@ -391,7 +393,7 @@ void UnloadPlugins() {
 
 void LoadPlugins() {
     std::call_once(g_plugin_load_once, []() {
-        const auto game_root = FileUtils::GetExecutablePath();
+        const auto game_root = FileUtils::GetExecutableDirectory();
         const auto plugins_dir = game_root / "plugins";
 
         g_game_root_dir = game_root.string();
@@ -453,19 +455,18 @@ void LoadPlugins() {
                 continue;
             }
 
+            bool initialized = false;
             const auto init_fn = reinterpret_cast<nioh3_plugin_initialize_fn>(
                 GetProcAddress(plugin_module, "nioh3_plugin_initialize"));
-            if (init_fn == nullptr) {
-                _MESSAGE("Plugin has no nioh3_plugin_initialize export, unload: %s", plugin_path_utf8.c_str());
-                FreeLibrary(plugin_module);
-                continue;
-            }
-
-            bool initialized = false;
-            try {
-                initialized = init_fn(&initialize_param);
-            } catch (...) {
-                initialized = false;
+            if (init_fn != nullptr) {
+                try {
+                    initialized = init_fn(&initialize_param);
+                } catch (...) {
+                    initialized = false;
+                }
+            } else {    
+                _MESSAGE("Plugin has no nioh3_plugin_initialize export: %s", plugin_path_utf8.c_str());
+                initialized = true;
             }
 
             if (!initialized) {
@@ -529,11 +530,11 @@ bool InstallCreateMutexATriggerHook() {
         &CreateMutexAHook);
 
     if (!g_create_mutex_a_hook) {
-        _MESSAGE("Failed to install CreateMutexA trigger hook.");
+        _MESSAGE("Failed to install plugin loader trigger hook.");
         return false;
     }
 
-    _MESSAGE("CreateMutexA trigger hook installed at: %p", create_mutex_addr);
+    _MESSAGE("Plugin loader trigger hook installed at: %p", create_mutex_addr);
     return true;
 }
 } // namespace
@@ -544,7 +545,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         DisableThreadLibraryCalls(hModule);
         initLogger(PLUGIN_NAME);
         _MESSAGE("----------------------------------------");
-        _MESSAGE("dinput8 proxy loaded.");
+        _MESSAGE("dinput8 proxy v%d.%d.%d loaded.", PLUGIN_VERSION_MAJOR, PLUGIN_VERSION_MINOR, PLUGIN_VERSION_PATCH);
 
         if (!LoadOriginalDinput8()) {
             MessageBoxA(nullptr, "Cannot load original dinput8.dll", PLUGIN_NAME, MB_ICONERROR);
@@ -552,7 +553,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         }
 
         if (!InstallCreateMutexATriggerHook()) {
-            _MESSAGE("CreateMutexA trigger hook install failed.");
+            _MESSAGE("Plugin loader trigger hook install failed.");
         }
 
         break;

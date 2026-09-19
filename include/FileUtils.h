@@ -16,7 +16,7 @@ namespace FileUtils {
      * 
      * @return std::filesystem::path
      */
-    std::filesystem::path GetExecutablePath();
+    std::filesystem::path GetExecutableDirectory();
     /**
      * 读取二进制文件的所有内容到一个字符串中
      * 
