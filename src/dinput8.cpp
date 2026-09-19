@@ -359,12 +359,7 @@ bool ResolveOriginalExports() {
     OrignalDllUnregisterServer = GetProcAddress(dll, "DllUnregisterServer");
     OrignalGetdfDIJoystick = GetProcAddress(dll, "GetdfDIJoystick");
 
-    return OrignalDirectInput8Create != nullptr &&
-        OrignalDllCanUnloadNow != nullptr &&
-        OrignalDllGetClassObject != nullptr &&
-        OrignalDllRegisterServer != nullptr &&
-        OrignalDllUnregisterServer != nullptr &&
-        OrignalGetdfDIJoystick != nullptr;
+    return OrignalDirectInput8Create != nullptr;
 }
 
 bool LoadOriginalDinput8() {
